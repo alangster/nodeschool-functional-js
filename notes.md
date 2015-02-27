@@ -184,5 +184,21 @@ function logger(namespace) {
   - Returns the `console.log` function with the namespace alreay bound as an argument
   - Any other arguments passed when the function is called are just appended to the namespace
 
+#### Implement Map with Reduce
+##### Task
+  - Use `Array#reduce` to implement a simple version of `Array#map`
 
+##### Solution
+```javascript
+function arrayMap(arr, fn) {
+	return arr.reduce(function(collect, el) {
+		return collect.concat(fn(el));
+	}, [])
+}
+```
 
+##### How It Works
+  - Calls `Array#reduce` on the original array, using a new, empty array as the initial value
+  - Each execution of the callback passed to `Array#reduce` returns a new array that is the result of concatenating the previous array with the result of calling the function on the element
+
+####
