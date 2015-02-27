@@ -20,24 +20,24 @@
 // ## Boilerplate
 
 // initial solution
-// function repeat(operation, num) {
-//   setTimeout(function() {
-//     if (num <= 0) return
-//     operation();
-//     return repeat(operation, --num);
-//   }, 0);
-// }
-
 function repeat(operation, num) {
-  if (num <= 0) return;
-  operation();
-  if (num % 10 === 0) {
-    setTimeout(function() {
-      repeat(operation, --num);
-    }, 0);
-  } else {
-    repeat(operation, --num);
-  }
+if (num <= 0) return;
+	operation();
+	setTimeout(function() {
+		return repeat(operation, --num);
+	}, 0);
 }
+
+// function repeat(operation, num) {
+//   if (num <= 0) return;
+//   operation();
+//   if (num % 10 === 0) {
+//     setTimeout(function() {
+//       repeat(operation, --num);
+//     }, 0);
+//   } else {
+//     repeat(operation, --num);
+//   }
+// }
 
 module.exports = repeat

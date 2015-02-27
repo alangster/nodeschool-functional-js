@@ -64,7 +64,7 @@ function getShortMessages(messages) {
   - `Array#filter` takes a callback function and creates a new array of the elements for which the callback evaluated to true
   - Then, chain `Array#map` to create another array that conists of only the messages (not the objects)
 
-#### Basic Every Some
+### Basic Every Some
 ##### Task
   - Return a function that takes a list of valid users and returns a function that returns true if all of the supplied users exist in the original list of users
 
@@ -88,7 +88,7 @@ function checkUsersValid(validUsers) {
   - `Array#some` iterates over ever element in the array until it finds one for which the test returns true
     - When it does, it returns true
 
-#### Basic Reduce
+### Basic Reduce
 ##### Task
   - Given an array of strings, use `Array#reduce` to create an object that contains the number of times each string occured in the array
 
@@ -107,7 +107,7 @@ function countWords(inputWords) {
     - Each execution of the callback should return the value to be used as the previous value in the next execution
   - When incrementing or setting the count, `++collectObj[str]` will be `NaN`, so `collectionObj[str]` will be set to 1
 
-#### Basic Recursion 
+### Basic Recursion 
 ##### Task
   - Implement `Array#reduce` using recursion
   - Function should take an array over which to reduce, a function to use as the reduction step, and an inital value for the reduction
@@ -128,7 +128,7 @@ function reduce(arr, fn, init) {
       - Return the initial value
     - Else, call `reduceOne` again with the next index and the inital value being the result of the callback function
 
-#### Basic Call
+### Basic Call
 ##### Task
   - Write a function `duckCount` that returns the number of arguments passed to it which have a property 'quack' defined directly on them. Do not match values inherited from prototypes.
 
@@ -148,7 +148,7 @@ function duckCount() {
   - Resulting array consists of only those objects for which the test evaluated to `true`
     - Return the `length` property of that array
 
-#### Partial Application Without Bind
+### Partial Application Without Bind
 ##### Task
   - Use partial application to create a function that fixes the first argument to `console.log`
 
@@ -169,7 +169,7 @@ function logger(namespace) {
     - So, use `apply` to pass the arguments and namespace to `console.log`
       - Concatenate the namespace with the arguments to make a single array
 
-#### Partial Application With Bind
+### Partial Application With Bind
 ##### Task
   - Use `Function.bind` to implement a logging function that allows logging messages with a namespace
 
@@ -184,7 +184,7 @@ function logger(namespace) {
   - Returns the `console.log` function with the namespace alreay bound as an argument
   - Any other arguments passed when the function is called are just appended to the namespace
 
-#### Implement Map with Reduce
+### Implement Map with Reduce
 ##### Task
   - Use `Array#reduce` to implement a simple version of `Array#map`
 
@@ -201,7 +201,7 @@ function arrayMap(arr, fn) {
   - Calls `Array#reduce` on the original array, using a new, empty array as the initial value
   - Each execution of the callback passed to `Array#reduce` returns a new array that is the result of concatenating the previous array with the result of calling the function on the element
 
-#### Function Spies
+### Function Spies
 ##### Task
   - Override a specified method of an object while still maintaining its original behavior
   - Create a spy that keeps track of how many times the function is called
@@ -226,5 +226,56 @@ function Spy(target, method) {
     - In new definition, increment the spy's count
     - Call the original function with the arguments passed
       - `this` will refer to the target, since we are technically inside target while redefining the method
+
+### Blocking Event Loop
+##### Task
+  - Modify the recursive `repeat` function provided in the boilerplate, such that it does not block the event loop (i.e. Timers and IO handlers can fire). This necessarily requires `repeat` to be asynchronous.
+  - A timeout is queued to fire after 1 second, which will print the results of the test and exit the process. `repeat` should release control of the event loop such that the timeout fires before 1500 milliseconds elapse.
+
+##### Boilerplate
+```javascript
+function repeat(operation, num) {
+	if (num <= 0) return;
+	operation();
+	return repeat(operation, --num);
+}
+```
+##### Solution
+```javascript
+function repeat(operation, num) {
+	if (num <= 0) return;
+	operation();
+	setTimeout(function() {
+		return repeat(operation, --num);
+	}, 0);
+}
+
+// alternatively...
+
+function repeat(operation, num) {
+	if (num <= 0) return;
+	operation();
+	if (num % 10 === 0) {
+		setTimeout(function() {
+			repeat(operation, --num);
+		}, 0);
+	} else {
+		repeat(operation, --num);
+	}
+}
+```
+
+##### How It Works
+  - First Solution
+    - Runs the operation, then sets a timeout with a minimum delay of 0 milliseconds
+      - Setting the timeout means the callback, which calls `repeat` and decrements `num` will get pushed into the event queue
+      - Because it is in the event queue, it will move onto the stack when the stack is empty, where `repeat` will fire off the operation and another `setTimout`
+        - The `setTimeout` that has been queued to interrup the process will enter the event queue after its delay, thus 'cutting in line' and ending up ahead of the `repeat` operations added to the queue after it
+        - When the interrupting function reaches the front of the queue and there is nothing on the stack, the event loop will move it onto the stack
+          - It will be executed, and the entire process will halt
+  - Second Solution
+    - It is essentially the same as the first, but it runs more operations
+      - It is able to run more operations because it only yields control (i.e., puts a `repeat` into the event queue) every 10 times the code runs
+
 
 
