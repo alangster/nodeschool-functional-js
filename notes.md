@@ -158,7 +158,7 @@ var slice = Array.prototype.slice;
 
 function logger(namespace) {
 	return function() {
-		console.log.apply(null, [namespace].concat(slice.call(arguments)))
+		console.log.apply(console, [namespace].concat(slice.call(arguments)))
 	}
 }
 ```
@@ -168,5 +168,21 @@ function logger(namespace) {
   - `console.log` is variadic, as is the closure
     - So, use `apply` to pass the arguments and namespace to `console.log`
       - Concatenate the namespace with the arguments to make a single array
+
+#### Partial Application With Bind
+##### Task
+  - Use `Function.bind` to implement a logging function that allows logging messages with a namespace
+
+##### Solution
+```javascript
+function logger(namespace) {
+	return console.log.bind(console, namespace);
+}
+```
+
+##### How It Works
+  - Returns the `console.log` function with the namespace alreay bound as an argument
+  - Any other arguments passed when the function is called are just appended to the namespace
+
 
 
