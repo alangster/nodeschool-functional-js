@@ -277,5 +277,59 @@ function repeat(operation, num) {
     - It is essentially the same as the first, but it runs more operations
       - It is able to run more operations because it only yields control (i.e., puts a `repeat` into the event queue) every 10 times the code runs
 
+### Trampoline
+##### Task
+  - Modify the boilerplate below such that it uses a trampoline to continuously call itself synchronously.
+  - You can assume that the operation passed to repeat does not take arguments (or they are already bound to the function) and the return value is not important.
+
+##### Boilerplate
+```javascript
+function repeat(operation, num) {
+  // Modify this so it doesn't cause a stack overflow!
+  if (num <= 0) return
+  operation()
+  return repeat(operation, --num)
+}
+
+function trampoline(fn) {
+  // You probably want to implement a trampoline!
+}
+
+module.exports = function(operation, num) {
+  // You probably want to call your trampoline here!
+  return repeat(operation, num)
+}
+```
+##### Solution
+```javascript
+function repeat(operation, num) {
+	return function() {
+		if (num <= 0) return;
+		operation();
+		return repeat(operation, --num);
+	}
+}
+
+function trampoline(fn) {
+	while(fn && typeof(fn) === 'function') {
+		fn = fn();
+	}
+}
+
+module.exports = function(operation, num) {
+	trampoline(function() {
+		return repeat(operation, num)
+	});
+}
+```
+##### How It Works
+  - Starts with `trampoline` being called with a function as an argument
+	  - `trampoline` checks that its argument exists and is a function
+	  - It is, so it resets `fn` to the result of calling the function it received
+	  - In calling the function it received, the return value is the result of calling `repeat`
+	  - The return value of `repeat` is a closure, so that closure becomes the new value of `fn`
+	  - `fn` is a function, so it gets reset to the value of calling `fn`
+	  - Calling `fn` runs the `operation` and returns the result of calling `repeat`, which is a closure...
+	- The trampoline is a good way to do this because it only pushes a few functions onto the stack over `trampoline` itself
 
 
