@@ -18,7 +18,7 @@ function repeat(operation, num) {
 
 ### Basic Map
 ##### Task
-  - Convert the following code from a for loop to Array#map
+  - Convert the following code from a for loop to `Array#map`
 ```javascript
 function doubleAll(numbers) {
   var result = []
@@ -37,12 +37,12 @@ function doubleAll(numbers) {
 }
 ```
 ##### How It Works
-  - Array#map takes a callback function which takes the current element, (and the current index and original array) 
-    - Callback function returns an element for the new array produced by Array#map
+  - `Array#map` takes a callback function which takes the current element, (and the current index and original array) 
+    - Callback function returns an element for the new array produced by `Array#map`
 
 ### Basic Filter
 ##### Task
-  - User Array#filter to write a function that takes an array of objects with `.message` properties and returns an array of messages that are fewer than 50 characters long
+  - User `Array#filter` to write a function that takes an array of objects with `.message` properties and returns an array of messages that are fewer than 50 characters long
 ##### Solution
 ```javascript
 function getShortMessages(messages) {
@@ -54,8 +54,8 @@ function getShortMessages(messages) {
 }
 ```
 ##### How It Works
-  - Array#filter takes a callback function and creates a new array of the elements for which the callback evaluated to true
-  - Then, chain Array#map to create another array that conists of only the messages (not the objects)
+  - `Array#filter` takes a callback function and creates a new array of the elements for which the callback evaluated to true
+  - Then, chain `Array#map` to create another array that conists of only the messages (not the objects)
 
 #### Basic Every Some
 ##### Task
@@ -74,14 +74,14 @@ function checkUsersValid(validUsers) {
 ```
 ##### How It Works
   - The returned function is a closure, so it has access to the original validUsers array
-  - Array#every tests whether or not all of the elements in the array pass the test provided by the callback 
-    - In this case, the callback utilizes Array#some
-  - Array#some iterates over ever element in the array until it finds one for which the test returns true
+  - `Array#every` tests whether or not all of the elements in the array pass the test provided by the callback 
+    - In this case, the callback utilizes `Array#some`
+  - `Array#some` iterates over ever element in the array until it finds one for which the test returns true
     - When it does, it returns true
 
 #### Basic Reduce
 ##### Task
-  - Given an array of strings, use Array#reduce to create an object that contains the number of times each string occured in the array
+  - Given an array of strings, use `Array#reduce` to create an object that contains the number of times each string occured in the array
 ##### Solution
 ```javascript
 function countWords(inputWords) {
@@ -92,8 +92,28 @@ function countWords(inputWords) {
 }
 ```
 ##### How It Works
-  - Array#reduce takes a callback function--which itself takes the previous return value and the current element--and an optional inital value for the 'previous value'
+  - `Array#reduce` takes a callback function--which itself takes the previous return value and the current element--and an optional inital value for the 'previous value'
     - Each execution of the callback should return the value to be used as the previous value in the next execution
   - When incrementing or setting the count, `++collectObj[str]` will be `NaN`, so `collectionObj[str]` will be set to 1
 
- 
+#### Basic Recursion 
+##### Task
+  - Implement `Array#reduce` using recursion
+  - Function should take an array over which to reduce, a function to use as the reduction step, and an inital value for the reduction
+##### Solution
+```javascript
+function reduce(arr, fn, init) {
+	(function reduceOne(ind, value) {
+		if (ind > arr.length - 1) return value;
+		return reduceOne(ind + 1, fn(value, arr[ind], ind, arr));
+	})(0, init);
+}
+```
+##### How It Works
+  - Uses an IIFE that is itself recursive
+  - IIFE takes an index and an initial value (starts with 0 and the initial value passed into the enclosing function)
+    - If the index is beyond the scope of the array, that means every element in the array has been processed
+      - Return the initial value
+    - Else, call `reduceOne` again with the next index and the inital value being the result of the callback function
+
+
