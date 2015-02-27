@@ -332,4 +332,40 @@ module.exports = function(operation, num) {
 	  - Calling `fn` runs the `operation` and returns the result of calling `repeat`, which is a closure...
 	- The trampoline is a good way to do this because it only pushes a few functions onto the stack over `trampoline` itself
 
+### Async Loops
+##### Task
+  - Fix this code! The callback should be called with all the users loaded. The order of the users should match the order of supplied user ids. Because this function is asynchronous, we do not care about its return value.
+
+##### Boilerplate
+```javascript
+function loadUsers(userIds, load, done) {
+  var users = []
+  for (var i = 0; i < userIds.length; i++) {
+    users.push(load(userIds[i]))
+  }
+  return users
+}
+```
+##### Solution
+```javascript
+function loadUsers(userIds, load, done) {
+	var users = [];
+	var loaded = 0;
+	userIds.forEach(function(id, ind) {
+		load(id, function(user) {
+			users[ind] = user;
+			if (++loaded === userIds.length) return done(users);
+		});
+	});
+}
+```
+##### How It Works
+  - Creates the array to hold loaded users, and initializes a counter to keep track of the number of loaded users
+  - Iterates over the array of user IDs, passing the id and index into the callback
+    - Within the callback, `load` the user asynchronously and, upon completion, run the callback
+      - Callback uses the original index to put the user in the correct place, then increments the number loaded and checks to see if all users have been loaded
+        - If all users have been loaded, it fires the `done` callback
+        - The callback for any of the users could be the one that executes `done`--it could be the first user if that one took a long time to load
+
+
 
