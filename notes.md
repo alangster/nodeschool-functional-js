@@ -39,3 +39,20 @@ function doubleAll(numbers) {
 ##### How It Works
   - Array#map takes a callback function which takes the current element, (and the current index and original array) 
     - Callback function returns an element for the new array produced by Array#map
+
+### Basic Filter
+##### Task
+  - User Array#filter to write a function that takes an array of objects with `.message` properties and returns an array of messages that are fewer than 50 characters long
+##### Solution
+```javascript
+function getShortMessages(messages) {
+	return messages.filter(function(msgObj) {
+		return msgObj.message < 50;
+	}).map(function(msgObj) {
+		return msgObj.message;
+	});
+}
+```
+##### How It Works
+  - Array#filter takes a callback function and creates a new array of the elements for which the callback evaluated to true
+  - Then, chain Array#map to create another array that conists of only the messages (not the objects)
