@@ -59,7 +59,7 @@
 
 // initial solution
 // function curryN(fn, n) {
-//   if (typeOf(n) !== 'number') n = fn.length;
+//   if (typeof(n) !== 'number') n = fn.length;
 //   return function curry(arg) {
 //     if (n === 1) return fn(arg);
 //     --n;
