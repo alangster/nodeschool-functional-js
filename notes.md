@@ -201,4 +201,30 @@ function arrayMap(arr, fn) {
   - Calls `Array#reduce` on the original array, using a new, empty array as the initial value
   - Each execution of the callback passed to `Array#reduce` returns a new array that is the result of concatenating the previous array with the result of calling the function on the element
 
-####
+#### Function Spies
+##### Task
+  - Override a specified method of an object while still maintaining its original behavior
+  - Create a spy that keeps track of how many times the function is called
+
+##### Solution
+```javascript
+function Spy(target, method) {
+	var spy = { count: 0 };
+	var origFunction = target[method];
+	target[method] = function() {
+		++spy.count;
+		return origFunction.apply(this, arguments);
+	}
+	return spy;
+}
+```
+
+##### How It Works
+  - Create a spy object with a count propert
+  - Store the original function that is the method on the target
+  - Redefine the method on the target
+    - In new definition, increment the spy's count
+    - Call the original function with the arguments passed
+      - `this` will refer to the target, since we are technically inside target while redefining the method
+
+
