@@ -57,7 +57,7 @@ function getShortMessages(messages) {
   - Array#filter takes a callback function and creates a new array of the elements for which the callback evaluated to true
   - Then, chain Array#map to create another array that conists of only the messages (not the objects)
 
-#### Every Some
+#### Basic Every Some
 ##### Task
   - Return a function that takes a list of valid users and returns a function that returns true if all of the supplied users exist in the original list of users
 ##### Solution
@@ -78,3 +78,22 @@ function checkUsersValid(validUsers) {
     - In this case, the callback utilizes Array#some
   - Array#some iterates over ever element in the array until it finds one for which the test returns true
     - When it does, it returns true
+
+#### Basic Reduce
+##### Task
+  - Given an array of strings, use Array#reduce to create an object that contains the number of times each string occured in the array
+##### Solution
+```javascript
+function countWords(inputWords) {
+	return inputWords.reduce(function(collectObj, str) {
+		collectObj[str] = ++collectObj[str] || 1;
+		return collectObj;
+	}, {})
+}
+```
+##### How It Works
+  - Array#reduce takes a callback function--which itself takes the previous return value and the current element--and an optional inital value for the 'previous value'
+    - Each execution of the callback should return the value to be used as the previous value in the next execution
+  - When incrementing or setting the count, `++collectObj[str]` will be `NaN`, so `collectionObj[str]` will be set to 1
+
+ 
