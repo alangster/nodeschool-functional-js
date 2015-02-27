@@ -148,4 +148,25 @@ function duckCount() {
   - Resulting array consists of only those objects for which the test evaluated to `true`
     - Return the `length` property of that array
 
+#### Partial Application Without Bind
+##### Task
+  - Use partial application to create a function that fixes the first argument to `console.log`
+
+##### Solution
+```javascript
+var slice = Array.prototype.slice;
+
+function logger(namespace) {
+	return function() {
+		console.log.apply(null, [namespace].concat(slice.call(arguments)))
+	}
+}
+```
+
+##### How It Works
+  - The logger function returns a closure, so the closure has access to the original `namespace` value
+  - `console.log` is variadic, as is the closure
+    - So, use `apply` to pass the arguments and namespace to `console.log`
+      - Concatenate the namespace with the arguments to make a single array
+
 
