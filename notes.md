@@ -1,6 +1,7 @@
 ### Higher Order Functions
 ##### Task
   - Implement a function that takes a function and a number `num`, and then executes the function `num` times
+
 ##### Solution
 ```javascript
 function repeat(operation, num) {
@@ -9,9 +10,11 @@ function repeat(operation, num) {
 	return repeat(operation, --num);
 }
 ```
+
 ##### How It Works
   - Uses recursion and decrements the number of times to run the operation after each run of the operation
   - Base case is 0 more times to run the operation
+
 ##### Thoughts
   - I initially was running the operation after the recursion (so each operation was run after the 'kick')
     - However, while it worked, it was inaccurate, because `num` was being decremented prematurely
@@ -28,6 +31,7 @@ function doubleAll(numbers) {
   return result
 }
 ```
+
 ##### Solution
 ```javascript
 function doubleAll(numbers) {
@@ -36,6 +40,7 @@ function doubleAll(numbers) {
 	});
 }
 ```
+
 ##### How It Works
   - `Array#map` takes a callback function which takes the current element, (and the current index and original array) 
     - Callback function returns an element for the new array produced by `Array#map`
@@ -43,6 +48,7 @@ function doubleAll(numbers) {
 ### Basic Filter
 ##### Task
   - User `Array#filter` to write a function that takes an array of objects with `.message` properties and returns an array of messages that are fewer than 50 characters long
+
 ##### Solution
 ```javascript
 function getShortMessages(messages) {
@@ -53,6 +59,7 @@ function getShortMessages(messages) {
 	});
 }
 ```
+
 ##### How It Works
   - `Array#filter` takes a callback function and creates a new array of the elements for which the callback evaluated to true
   - Then, chain `Array#map` to create another array that conists of only the messages (not the objects)
@@ -60,6 +67,7 @@ function getShortMessages(messages) {
 #### Basic Every Some
 ##### Task
   - Return a function that takes a list of valid users and returns a function that returns true if all of the supplied users exist in the original list of users
+
 ##### Solution
 ```javascript
 function checkUsersValid(validUsers) {
@@ -72,6 +80,7 @@ function checkUsersValid(validUsers) {
 	}
 }
 ```
+
 ##### How It Works
   - The returned function is a closure, so it has access to the original validUsers array
   - `Array#every` tests whether or not all of the elements in the array pass the test provided by the callback 
@@ -82,6 +91,7 @@ function checkUsersValid(validUsers) {
 #### Basic Reduce
 ##### Task
   - Given an array of strings, use `Array#reduce` to create an object that contains the number of times each string occured in the array
+
 ##### Solution
 ```javascript
 function countWords(inputWords) {
@@ -91,6 +101,7 @@ function countWords(inputWords) {
 	}, {})
 }
 ```
+
 ##### How It Works
   - `Array#reduce` takes a callback function--which itself takes the previous return value and the current element--and an optional inital value for the 'previous value'
     - Each execution of the callback should return the value to be used as the previous value in the next execution
@@ -100,6 +111,7 @@ function countWords(inputWords) {
 ##### Task
   - Implement `Array#reduce` using recursion
   - Function should take an array over which to reduce, a function to use as the reduction step, and an inital value for the reduction
+
 ##### Solution
 ```javascript
 function reduce(arr, fn, init) {
@@ -115,5 +127,25 @@ function reduce(arr, fn, init) {
     - If the index is beyond the scope of the array, that means every element in the array has been processed
       - Return the initial value
     - Else, call `reduceOne` again with the next index and the inital value being the result of the callback function
+
+#### Basic Call
+##### Task
+  - Write a function `duckCount` that returns the number of arguments passed to it which have a property 'quack' defined directly on them. Do not match values inherited from prototypes.
+
+##### Solution
+```javascript
+function duckCount() {
+	return Array.prototype.slice.call(arguments).filter(function(duck) {
+		return Object.prototype.hasOwnProperty.call(duck, 'quack'); 
+	}).length;
+}
+```
+
+##### How It Works
+  - Start by borrowing `Array#slice` to make a copy of the arguments (result is an array of the arguments)
+  - Call `Array#filter` on the arguments array
+    - Inside the callback function for the filter, borrow `Object#hasOwnProperty` to test whether or not the current element has the property'quack'
+  - Resulting array consists of only those objects for which the test evaluated to `true`
+    - Return the `length` property of that array
 
 
