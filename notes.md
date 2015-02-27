@@ -367,5 +367,35 @@ function loadUsers(userIds, load, done) {
         - If all users have been loaded, it fires the `done` callback
         - The callback for any of the users could be the one that executes `done`--it could be the first user if that one took a long time to load
 
+### Recursion
+##### Task
+  - Implement a recursive function that returns all of the unique dependencies, and sub-dependencies of a module, sorted alphabetically. Dependencies should be printed as dependency@version e.g. 'inflection@1.2.6'.
+  - Multiple versions of the same module are allowed, but duplicates modules of the same version should be removed.
+
+#####Solution
+```javascript
+function getDependencies(tree) {
+	if (!tree.dependencies) return [];
+	var dependencies = [];
+	function find(subTree) {
+	  Object.keys(subTree).forEach(function(dep) {
+			var nameAndVersion = dep + '@' + subTree[dep].version;
+			if (dependencies.indexOf(nameAndVersion) === -1) dependencies.push(nameAndVersion);
+			if (subTree.dependencies) find(subTree.dependencies);
+	  });
+	}
+	find(tree.dependencies);
+	return dependencies.sort();
+}
+```
+##### How It Works
+  - Return an empty array if the original tree has no dependencies
+  - Initialize an array to store the dependencies
+  - Call `find` with the original tree's dependencies
+    - Inside `find` get the keys found in the dependencies object
+    - For each key, assemble its name and version string
+      - If the name and version string is not already in the dependencies array, push it in
+    - If the tree passed into `find` has a dependencies object, call `find` again and pass that object in
+  - Ultimately, sort and return the dependencies array
 
 
